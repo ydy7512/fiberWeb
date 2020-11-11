@@ -12,11 +12,11 @@ var Redis *redis.Client
 var ctx = context.Background()
 
 func initializeRedis() {
-	db, _ := strconv.Atoi(config.Config("REDIS_DB"))
-	poolSize, _ := strconv.Atoi(config.Config("REDIS_POOL_SIZE"))
+	db, _ := strconv.Atoi(config.Env("REDIS_DB"))
+	poolSize, _ := strconv.Atoi(config.Env("REDIS_POOL_SIZE"))
 	Redis = redis.NewClient(&redis.Options{
-		Addr:     config.Config("REDIS_ADDR"),
-		Password: config.Config("REDIS_PASSWORD"),
+		Addr:     config.Env("REDIS_ADDR"),
+		Password: config.Env("REDIS_PASSWORD"),
 		DB:       db,
 		PoolSize: poolSize,
 	})

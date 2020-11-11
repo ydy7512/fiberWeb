@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fiberWeb/config"
 	"fiberWeb/router"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -17,5 +18,5 @@ func NewEngine() {
 	app.Use(cors.New())
 
 	router.SetupRoutes(app)
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":" + config.Env("SERVER_PORT")))
 }

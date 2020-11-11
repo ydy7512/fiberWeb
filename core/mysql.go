@@ -13,7 +13,7 @@ var DB *gorm.DB
 // initializeDB 初始化数据库配置
 func initializeDB() {
 	var err error
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4", config.Config("DB_USER"), config.Config("DB_PASSWORD"), config.Config("DB_ADDR"), config.Config("DB_DATABASE"))
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4", config.Env("DB_USER"), config.Env("DB_PASSWORD"), config.Env("DB_ADDR"), config.Env("DB_DATABASE"))
 	mysqlConfig := mysql.Config{
 		DSN:                       dsn,
 		DefaultStringSize:         191,   // string 类型字段的默认长度
@@ -28,8 +28,8 @@ func initializeDB() {
 	}
 	sqlDB, _ := DB.DB()
 
-	maxIdle, err := strconv.Atoi(config.Config("DB_MAX_IDLE"))
-	maxOpen, err := strconv.Atoi(config.Config("DB_MAX_OPEN"))
+	maxIdle, err := strconv.Atoi(config.Env("DB_MAX_IDLE"))
+	maxOpen, err := strconv.Atoi(config.Env("DB_MAX_OPEN"))
 	sqlDB.SetMaxIdleConns(maxIdle)
 	sqlDB.SetMaxOpenConns(maxOpen)
 

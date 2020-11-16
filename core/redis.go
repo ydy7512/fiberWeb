@@ -9,7 +9,12 @@ import (
 var Redis map[string]*redis.Client
 var ctx = context.Background()
 
+func NewRedis() {
+	Redis = make(map[string]*redis.Client)
+}
+
 func initializeRedis(name string, config *redis.Options) {
+	fmt.Println("redis初始化...")
 	Redis[name] = redis.NewClient(config)
 	rds := Redis[name]
 	_, err := rds.Ping(ctx).Result()

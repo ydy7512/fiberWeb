@@ -18,6 +18,10 @@ type Config struct {
 	MaxOpen    int
 }
 
+func NewMysql() {
+	DB = make(map[string]*gorm.DB)
+}
+
 // initializeDB 初始化数据库配置
 func initializeDB(name string, cfg Config) {
 	fmt.Println("mysql初始化...")

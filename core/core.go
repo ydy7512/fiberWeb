@@ -12,6 +12,7 @@ import (
 
 func NewEngine() {
 	// 初始化数据库
+	NewMysql()
 	poolSwitch, _ := strconv.Atoi(config.Env("DB_POOL_SWITCH"))
 	maxIdle, _ := strconv.Atoi(config.Env("DB_POOL_SWITCH"))
 	maxOpen, _ := strconv.Atoi(config.Env("DB_POOL_SWITCH"))
@@ -26,6 +27,7 @@ func NewEngine() {
 	}
 	initializeDB("default", defaultMysqlConfig)
 	// 初始化redis
+	NewRedis()
 	db, _ := strconv.Atoi(config.Env("REDIS_DB"))
 	poolSize, _ := strconv.Atoi(config.Env("REDIS_POOL_SIZE"))
 	initializeRedis("default", &redis.Options{

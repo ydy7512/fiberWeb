@@ -2,6 +2,8 @@ package core
 
 import (
 	"fiberWeb/config"
+	"fiberWeb/core/mysql"
+	redis2 "fiberWeb/core/redis"
 	"fiberWeb/router"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
@@ -12,11 +14,10 @@ import (
 
 func NewEngine() {
 	// 初始化数据库
-	NewMysql()
 	poolSwitch, _ := strconv.Atoi(config.Env("DB_POOL_SWITCH"))
 	maxIdle, _ := strconv.Atoi(config.Env("DB_POOL_SWITCH"))
 	maxOpen, _ := strconv.Atoi(config.Env("DB_POOL_SWITCH"))
-	defaultMysqlConfig := Config{
+	defaultMysqlConfig := mysql.Config{
 		Addr:       config.Env("DB_ADDR"),
 		Database:   config.Env("DB_DATABASE"),
 		User:       config.Env("DB_USER"),
@@ -25,12 +26,11 @@ func NewEngine() {
 		MaxIdle:    maxIdle,
 		MaxOpen:    maxOpen,
 	}
-	initializeDB("default", defaultMysqlConfig)
+	mysql.InitializeDB("default", defaultMysqlConfig)
 	// 初始化redis
-	NewRedis()
 	db, _ := strconv.Atoi(config.Env("REDIS_DB"))
 	poolSize, _ := strconv.Atoi(config.Env("REDIS_POOL_SIZE"))
-	initializeRedis("default", &redis.Options{
+	redis2.InitializeRedis("default", &redis.Options{
 		Addr:     config.Env("REDIS_ADDR"),
 		Password: config.Env("REDIS_PASSWORD"),
 		DB:       db,

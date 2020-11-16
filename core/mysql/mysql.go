@@ -1,4 +1,4 @@
-package core
+package mysql
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB map[string]*gorm.DB
+var DB = make(map[string]*gorm.DB)
 
 type Config struct {
 	Addr       string
@@ -18,12 +18,8 @@ type Config struct {
 	MaxOpen    int
 }
 
-func NewMysql() {
-	DB = make(map[string]*gorm.DB)
-}
-
-// initializeDB 初始化数据库配置
-func initializeDB(name string, cfg Config) {
+// InitializeDB 初始化数据库配置
+func InitializeDB(name string, cfg Config) {
 	fmt.Println("mysql初始化...")
 	var err error
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4", cfg.User, cfg.Password, cfg.Addr, cfg.Database)

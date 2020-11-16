@@ -1,19 +1,28 @@
 package core
 
 import (
-	"fiberWeb/config"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"strconv"
 )
 
-var DB *gorm.DB
+var DB map[string]*gorm.DB
+
+type Config struct {
+	Addr       string
+	Database   string
+	User       string
+	Password   string
+	PoolSwitch int
+	MaxIdle    int
+	MaxOpen    int
+}
 
 // initializeDB 初始化数据库配置
-func initializeDB() {
+func initializeDB(name string, cfg Config) {
+	fmt.Println("mysql初始化...")
 	var err error
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4", config.Env("DB_USER"), config.Env("DB_PASSWORD"), config.Env("DB_ADDR"), config.Env("DB_DATABASE"))
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4", cfg.User, cfg.Password, cfg.Addr, cfg.Database)
 	mysqlConfig := mysql.Config{
 		DSN:                       dsn,
 		DefaultStringSize:         191,   // string 类型字段的默认长度
@@ -22,16 +31,16 @@ func initializeDB() {
 		DontSupportRenameColumn:   true,  // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 		SkipInitializeWithVersion: false, // 根据版本自动配置
 	}
-	DB, err = gorm.Open(mysql.New(mysqlConfig), &gorm.Config{})
+	DB[name], err = gorm.Open(mysql.New(mysqlConfig), &gorm.Config{})
 	if err != nil {
 		panic("mysql连接失败...")
 	}
-	sqlDB, _ := DB.DB()
+	sqlDB, _ := DB[name].DB()
 
-	maxIdle, err := strconv.Atoi(config.Env("DB_MAX_IDLE"))
-	maxOpen, err := strconv.Atoi(config.Env("DB_MAX_OPEN"))
-	sqlDB.SetMaxIdleConns(maxIdle)
-	sqlDB.SetMaxOpenConns(maxOpen)
+	if cfg.PoolSwitch == 1 {
+		sqlDB.SetMaxIdleConns(cfg.MaxIdle)
+		sqlDB.SetMaxOpenConns(cfg.MaxOpen)
+	}
 
 	fmt.Println("mysql连接成功...")
 }
